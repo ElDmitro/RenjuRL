@@ -1,1 +1,1 @@
-**Schedule info locates in projection folder**
+**Schedule info locates in the projection folder**
