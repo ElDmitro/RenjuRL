@@ -12,8 +12,8 @@
         (this way we will have working prototype of a model;
         constant prediction)
 
-**TOTHINK:** Implement game engine in python (++); we are going to implement graphical UI in C# or similar lang.
-**Remark:** We should project painstakingly software architecture. There are a lot of scattered modules, we want to interact with them from other sources and from other modules in arch.
+**TOTHINK:** Implement game engine in python (++); we are going to implement graphical UI in C# or similar lang.\
+**Remark:** We should project painstakingly software architecture. There are a lot of scattered modules, we want to interact with them from other sources and from other modules in arch.\
 **Remark:** Our model have to save its previous version (while training)
 
 ## Week 2:
