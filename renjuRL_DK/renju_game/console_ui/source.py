@@ -1,10 +1,9 @@
 import numpy as np
-from ..brains.GameManager import InterfaceAbstract
 
 
-class ConsoleInterface(InterfaceAbstract):
+class ConsoleInterface:
     def __init__(self, **kwargs):
-        super().__init__(kwargs)
+        pass
 
     def update_board(self, board):
         print(chr(27) + "[2J")
@@ -17,17 +16,17 @@ class ConsoleInterface(InterfaceAbstract):
 
             for el in board[i]:
                 print("-{}".format(el), end='')
-            print("-", end='')
+            print("-", end='\n')
 
-        for j in range(y_shape):
+        for i in range(y_shape):
             print(" |", end='')
         print()
 
-    def show_message(self, line, end):
+    def show_message(self, line, end='\n'):
         print(line, end=end)
 
     def get_command(self):
-        return self.__parse_command(input)
+        return self.__parse_command(input())
 
     def __parse_command(self, line):
         line = line.split()

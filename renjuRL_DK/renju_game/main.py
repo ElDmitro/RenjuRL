@@ -1,6 +1,5 @@
-from .brains.GameManager import GameManager
-from renju_game.brains.GameManager import 
+from renjuRL_DK.renju_game.brains.GameManager import GameManager
 
-def main():
-    gm = GameManager()
-    gm.start_new_game()
+
+gm = GameManager()
+gm.start_new_game()

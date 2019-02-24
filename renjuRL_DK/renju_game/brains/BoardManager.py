@@ -17,7 +17,7 @@ class BoardManager:
 
     def __init__(self):
         self.__next_player = self.__players[0]
-        self.__board = np.zeros(self.__B_SHAPE)
+        self.__board = np.zeros(self.__B_SHAPE, dtype=np.int8)
 
     def make_move(self, player, cell):
         assert self.__next_player == player, "It's not {} player turn".format(player)
@@ -65,7 +65,7 @@ class BoardManager:
 
             main_diag_mx = self.__get_diag_mx(np.fliplr(self.__board))
             main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
-            X, Y = self.__check_combination(main_diag_mx)
+            X, Y = self.__check_combination(pl, main_diag_mx)
             if len(X) > 0:
                 x = 14 - X[0]
                 y = 14 - Y[0]

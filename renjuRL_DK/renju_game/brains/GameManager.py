@@ -1,19 +1,5 @@
-from .BoardManager import BoardManager
-from ..console_ui.source import ConsoleInterface
-
-
-class InterfaceAbstract:
-    def __init__(self, **kwargs):
-        pass
-
-    def update_board(self, board):
-        pass
-
-    def show_message(self, line, end):
-        pass
-
-    def get_command(self):
-        pass
+from renjuRL_DK.renju_game.brains.BoardManager import BoardManager
+from renjuRL_DK.renju_game.console_ui.source import ConsoleInterface
 
 
 class GameManager:
@@ -26,7 +12,7 @@ class GameManager:
 
         self.__bot_difficulty = bot_difficulty
         if interface == 'console':
-            self.__interface = ConsoleInterface(kwargs)
+            self.__interface = ConsoleInterface(**kwargs)
         #else:
         #    self.__interface = GInterface(kwargs)
 
@@ -44,9 +30,10 @@ class GameManager:
                 continue
 
             if command['code'] == 'move':
-                x, y = command['args']
-                self.__current_bm.make_move(1, x, y)
+                x, y = [int(x) for x in command['args']]
+                self.__current_bm.make_move(1, (x, y))
                 self.__interface.update_board(self.__current_bm.get_board_status())
+                continue
 
             if command['code'] == 'finish':
                 self.__interface.show_message("Are you sure? [y/n]:", end='')
@@ -56,6 +43,10 @@ class GameManager:
 
             if command['code'] == 'show':
                 self.__interface.update_board(self.__current_bm.get_board_status())
+                continue
+
+            self.__interface.show_message("\nIncorrect command")
+            continue
 
     def finish_current_game(self):
         self.__current_bm = None
