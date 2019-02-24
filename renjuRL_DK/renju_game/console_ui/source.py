@@ -39,3 +39,6 @@ class ConsoleInterface:
         line = line.split()
         return {'code': line[0], 'args': line[1:]}
 
+    def close_thm(self):
+        pass
+

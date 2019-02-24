@@ -31,11 +31,18 @@ class GameManager:
 
             if command['code'] == 'move':
                 x, y = [int(x, 16) for x in command['args']]
-                move_code = self.__current_bm.make_move(1, (x, y))
+
+                try:
+                    move_code = self.__current_bm.make_move(1, (x, y))
+                except Exception as ex:
+                    self.__interface.show_message(ex.args[1])
+                    continue
+
                 self.__interface.update_board(self.__current_bm.get_board_status())
                 if move_code is None:
                     continue
 
+                # REFACTOR TODO
                 pl, x, y, x_v, y_v = move_code
                 board = self.__current_bm.get_board_status()
                 for i in range(5):
@@ -48,6 +55,7 @@ class GameManager:
             if command['code'] == 'finish':
                 self.__interface.show_message("Are you sure? [y/n]:", end='')
                 if input() == 'y':
+                    self.__interface.close_thm()
                     break
                 continue
 

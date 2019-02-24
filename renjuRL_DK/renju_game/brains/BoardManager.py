@@ -23,8 +23,16 @@ class BoardManager:
         self.__board = np.zeros(self.__B_SHAPE, dtype=np.int8)
 
     def make_move(self, player, cell):
-        assert self.__next_player == player, "It's not {} player turn".format(player)
-        assert player in self.__players, "Incorrect players number"
+        if self.__next_player != player:
+            raise Exception(0, "It's not {} player turn".format(player))
+
+        if player not in self.__players:
+            raise Exception(2, "Incorrect players number")
+
+        if cell[0] < 0 or cell[0] >= self.__B_SHAPE[0]:
+            raise Exception(1, "Incorrect move")
+        if cell[1] < 0 or cell[1] >= self.__B_SHAPE[1]:
+            raise Exception(1, "Incorrect move")
 
         self.__board[cell] = player
         self.__next_player = self.__get_next_player(self.__next_player)
