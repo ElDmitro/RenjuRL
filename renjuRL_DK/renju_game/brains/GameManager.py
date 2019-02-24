@@ -30,10 +30,20 @@ class GameManager:
                 continue
 
             if command['code'] == 'move':
-                x, y = [int(x) for x in command['args']]
-                self.__current_bm.make_move(1, (x, y))
+                x, y = [int(x, 16) for x in command['args']]
+                move_code = self.__current_bm.make_move(1, (x, y))
                 self.__interface.update_board(self.__current_bm.get_board_status())
-                continue
+                if move_code is None:
+                    continue
+
+                pl, x, y, x_v, y_v = move_code
+                board = self.__current_bm.get_board_status()
+                for i in range(5):
+                    board[x + x_v * i, y + y_v * i] = 9
+                self.__interface.update_board(board)
+                self.__interface.show_message("{} player WIN!".format(pl))
+                break
+
 
             if command['code'] == 'finish':
                 self.__interface.show_message("Are you sure? [y/n]:", end='')

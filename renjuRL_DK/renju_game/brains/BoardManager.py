@@ -9,6 +9,9 @@ class BoardManager:
     __winning_players_comb ={__players[0]: np.array([__players[0]] * __winning_number_chip_in_row),
                              __players[1]: np.array([__players[1]] * __winning_number_chip_in_row)}
 
+    def __get_next_player(self, x):
+        return x
+
     def __get_diag_mx(self, a):
         return [np.diagonal(a, i) for i in range(self.__B_SHAPE[1] - 1, -self.__B_SHAPE[0], -1)]
 
@@ -24,6 +27,7 @@ class BoardManager:
         assert player in self.__players, "Incorrect players number"
 
         self.__board[cell] = player
+        self.__next_player = self.__get_next_player(self.__next_player)
         return self.__check_combinations()
 
     def get_board_status(self):
