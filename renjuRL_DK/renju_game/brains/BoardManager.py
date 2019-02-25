@@ -1,11 +1,8 @@
 import numpy as np
 
 winning_patterns = [
-    (4, [1, 0, 1, 1]),
-    (4, [1, 1, 0, 1]),
-    (4, [1, 1, 1]),
-    (3, [1, 0, 1]),
-    (3, [1, 1])
+    (4, [1, 1, 1, 1]),
+    (3, [1, 1, 1])
 ]
 
 
@@ -98,19 +95,26 @@ class BoardManager:
         board = self.__board.copy()
 
         board[board != self.__players[0]] = 0
+        board_h = board.copy()
+        board_v = board.copy()
+        board_d = board.copy()
+        board_sd = board.copy()
+
         fork_count = [0, 0]
         for wp_len, patt in winning_patterns:
-            X, Y = self.__find_pattern(board, patt)
+            X, Y = self.__find_pattern(board_h, patt)
             if len(X) > 0:
+                # TODO: check is this pattern open
                 fork_count[abs(3 - wp_len)] += len(X)
-                board = self.__clear_board(board, len(patt), X[0], Y[0], 0, 1)
+                board_h = self.__clear_board(board_h, len(patt), X[0], Y[0], 0, 1)
 
-            X, Y = self.__find_pattern(board.T, patt)
+            X, Y = self.__find_pattern(board_v.T, patt)
             if len(X) > 0:
+                # TODO
                 fork_count[abs(3 - wp_len)] += len(X)
-                board = self.__clear_board(board, len(patt), X[0], X[0], 1, 0)
+                board_v = self.__clear_board(board_v, len(patt), X[0], X[0], 1, 0)
 
-            main_diag_mx = self.__get_diag_mx(board)
+            main_diag_mx = self.__get_diag_mx(board_d)
             main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
             X, Y = self.__find_pattern(main_diag_mx, patt)
             if len(X) > 0:
@@ -122,13 +126,15 @@ class BoardManager:
                     X = Y
                     Y = tmp
 
+                # TODO
                 fork_count[abs(3 - wp_len)] += len(X)
-                board = self.__clear_board(board, len(patt), X, Y, 1, 1)
+                board_d = self.__clear_board(board_d, len(patt), X, Y, 1, 1)
 
-            main_diag_mx = self.__get_diag_mx(np.fliplr(board))
+            main_diag_mx = self.__get_diag_mx(np.fliplr(board_sd))
             main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
             X, Y = self.__find_pattern(main_diag_mx, patt)
             if len(X) > 0:
+                # TODO: Correct index process.
                 x = 14 - X[0]
                 y = 14 - Y[0]
 
@@ -136,8 +142,9 @@ class BoardManager:
                     y = 14 + x
                     x = Y[0]
 
+                # TODO
                 fork_count[abs(3 - wp_len)] += len(X)
-                board = self.__clear_board(board, len(patt), x, y, 1, -1)
+                board_sd = self.__clear_board(board_sd, len(patt), x, y, 1, -1)
 
         return np.any(np.array(fork_count) > 1)
 
