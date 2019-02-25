@@ -21,8 +21,9 @@ class GameManager:
             raise Exception("nn_bm", "Current game is not finished")
 
         self.__current_bm = BoardManager()
+        self.__interface.update_board(self.__current_bm.get_board_status())
         while True:
-            self.__interface.show_message("Your turn $:", end=' ')
+            self.__interface.show_message("\nYour turn $:", end=' ')
             command = self.__interface.get_command()
 
             if command['code'] is None:
@@ -30,7 +31,18 @@ class GameManager:
                 continue
 
             if command['code'] == 'move':
-                x, y = [int(x, 16) for x in command['args']]
+                try:
+                    x, y = command['args']
+
+                    x = ord(x) - ord('a')
+                    y = 15 - int(y, 16)
+
+                    x ^= y
+                    y ^= x
+                    x ^= y
+                except:
+                    self.__interface.show_message("Too few arguments")
+                    continue
 
                 try:
                     move_code = self.__current_bm.make_move(1, (x, y))
@@ -51,7 +63,6 @@ class GameManager:
                 self.__interface.show_message("{} player WIN!".format(pl))
                 break
 
-
             if command['code'] == 'finish':
                 self.__interface.show_message("Are you sure? [y/n]:", end='')
                 if input() == 'y':
@@ -61,6 +72,18 @@ class GameManager:
 
             if command['code'] == 'show':
                 self.__interface.update_board(self.__current_bm.get_board_status())
+                continue
+
+            if command['code'] == 'pass':
+                try:
+                    move_code = self.__current_bm.make_pass(1)
+                except Exception as ex:
+                    self.__interface.show_message(ex.args[1])
+                    continue
+
+                if move_code is not None:
+                    self.__interface.show_message("DRAW!\n")
+                    break
                 continue
 
             self.__interface.show_message("\nIncorrect command")

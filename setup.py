@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='renju_DK',
-    version='1.0.11',
+    version='1.0.16',
     description='Renju RL game with computer oppenent',
     url='https://github.com/eldmitro/renjurl',
     author='Dmitriy Kuznetsov',

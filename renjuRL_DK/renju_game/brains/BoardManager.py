@@ -1,7 +1,16 @@
 import numpy as np
 
+winning_patterns = [
+    (4, [1, 0, 1, 1]),
+    (4, [1, 1, 0, 1]),
+    (4, [1, 1, 1]),
+    (3, [1, 0, 1]),
+    (3, [1, 1])
+]
+
 
 class BoardManager:
+    __step = 0
     __B_SHAPE = (15, 15)
     __grid_X, __grid_Y = np.meshgrid(np.arange(__B_SHAPE[0]), np.arange(__B_SHAPE[1]))
     __winning_number_chip_in_row = 5
@@ -12,6 +21,9 @@ class BoardManager:
     def __get_next_player(self, x):
         return x
 
+    def get_players_list(self):
+        return self.__players.copy()
+
     def __get_diag_mx(self, a):
         return [np.diagonal(a, i) for i in range(self.__B_SHAPE[1] - 1, -self.__B_SHAPE[0], -1)]
 
@@ -21,25 +33,125 @@ class BoardManager:
     def __init__(self):
         self.__next_player = self.__players[0]
         self.__board = np.zeros(self.__B_SHAPE, dtype=np.int8)
+        self.__step = 0
+        self.__is_pass = 0
 
-    def make_move(self, player, cell):
+    def make_pass(self, player):
+        if player not in self.__players:
+            raise Exception(2, "Incorrect players number.\nPlayers list: {}, {}".format(self.__players[0], self.__players[1]))
+
         if self.__next_player != player:
             raise Exception(0, "It's not {} player turn".format(player))
 
+#        if self.__step < 5:
+#            raise Exception(0, "You have no chances to pass")
+
+        if self.__is_pass:
+            return 0, 0, 0, 0, 0
+
+        self.__is_pass = 1
+        self.__next_player = self.__get_next_player(self.__next_player)
+
+        return None
+
+    def make_move(self, player, cell):
         if player not in self.__players:
-            raise Exception(2, "Incorrect players number")
+            raise Exception(2, "Incorrect players number.\nPlayers list: {}, {}".format(self.__players[0], self.__players[1]))
+
+        if self.__next_player != player:
+            raise Exception(0, "It's not {} player turn".format(player))
 
         if cell[0] < 0 or cell[0] >= self.__B_SHAPE[0]:
             raise Exception(1, "Incorrect move")
         if cell[1] < 0 or cell[1] >= self.__B_SHAPE[1]:
             raise Exception(1, "Incorrect move")
 
+        if self.__board[cell] != 0:
+            raise Exception(3, "This cell is used")
+
+        self.__check_prefab_tabu(player, cell)
+
         self.__board[cell] = player
+        if self.__check_tabu():
+            return -1, 0, 0, 0, 0
+
         self.__next_player = self.__get_next_player(self.__next_player)
+        self.__is_pass = 0
+        self.__step += 1
         return self.__check_combinations()
 
     def get_board_status(self):
         return self.__board.copy()
+
+    def __find_pattern(self, board, patt):
+        grid_combs_horizon = self.__rolling_window(board, len(patt))
+        mask = np.all(grid_combs_horizon == patt, axis=2)
+        return np.where(mask)
+
+    def __clear_board(self, board, len, x, y, v_x, v_y):
+        for i in range(len):
+            board[x + v_x * i, y + v_y * i] = 0
+
+        return board
+
+    def __check_tabu(self):
+        board = self.__board.copy()
+
+        board[board != self.__players[0]] = 0
+        fork_count = [0, 0]
+        for wp_len, patt in winning_patterns:
+            X, Y = self.__find_pattern(board, patt)
+            if len(X) > 0:
+                fork_count[abs(3 - wp_len)] += len(X)
+                board = self.__clear_board(board, len(patt), X[0], Y[0], 0, 1)
+
+            X, Y = self.__find_pattern(board.T, patt)
+            if len(X) > 0:
+                fork_count[abs(3 - wp_len)] += len(X)
+                board = self.__clear_board(board, len(patt), X[0], X[0], 1, 0)
+
+            main_diag_mx = self.__get_diag_mx(board)
+            main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
+            X, Y = self.__find_pattern(main_diag_mx, patt)
+            if len(X) > 0:
+                X = 14 - X[0]
+                Y = Y[0]
+
+                if X < 0:
+                    tmp = -X
+                    X = Y
+                    Y = tmp
+
+                fork_count[abs(3 - wp_len)] += len(X)
+                board = self.__clear_board(board, len(patt), X, Y, 1, 1)
+
+            main_diag_mx = self.__get_diag_mx(np.fliplr(board))
+            main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
+            X, Y = self.__find_pattern(main_diag_mx, patt)
+            if len(X) > 0:
+                x = 14 - X[0]
+                y = 14 - Y[0]
+
+                if x < 0:
+                    y = 14 + x
+                    x = Y[0]
+
+                fork_count[abs(3 - wp_len)] += len(X)
+                board = self.__clear_board(board, len(patt), x, y, 1, -1)
+
+        return np.any(np.array(fork_count) > 1)
+
+
+
+    def __check_prefab_tabu(self, player, cell):
+        if self.__step == 0 and cell != (7, 7):
+            raise Exception(1, "Go to center!")
+
+#        if self.__step < 3 and (cell[0] < 6 or cell[0] > 8 or cell[1] < 6 or cell[1] > 8):
+#            raise Exception(1, 'Go to 3x3 square')
+
+#        if self.__step < 6 and (cell[0] < 4 or cell[0] > 10 or cell[1] < 4 or cell[1] > 10):
+#            raise Exception(1, 'Go to 5x5 square')
 
     def __rolling_window(self, a, window):
         shape = a.shape[:-1] + (a.shape[-1] - window + 1, window)
