@@ -116,39 +116,40 @@ class BoardManager:
 
             main_diag_mx = self.__get_diag_mx(board_d)
             main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
+            # TODO: from here
             X, Y = self.__find_pattern(main_diag_mx, patt)
+            # TODO: Do it for all
             if len(X) > 0:
-                X = 14 - X[0]
-                Y = Y[0]
+                if X <= 14:
+                    y = 14 - X[0]
+                    x = 0
 
-                if X < 0:
-                    tmp = -X
-                    X = Y
-                    Y = tmp
+                    y += Y[0]
+                    x += Y[0]
+                else:
+                    x = X[0] - 14
+                    y = 0
+
+                    y += Y[0]
+                    x += Y[0]
 
                 # TODO
                 fork_count[abs(3 - wp_len)] += len(X)
-                board_d = self.__clear_board(board_d, len(patt), X, Y, 1, 1)
+                board_d = self.__clear_board(board_d, len(patt), x, y, 1, 1)
 
             main_diag_mx = self.__get_diag_mx(np.fliplr(board_sd))
             main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
             X, Y = self.__find_pattern(main_diag_mx, patt)
             if len(X) > 0:
                 # TODO: Correct index process.
-                x = 14 - X[0]
-                y = 14 - Y[0]
-
-                if x < 0:
-                    y = 14 + x
-                    x = Y[0]
+                if X[0] <= 14:
+                    x = 
 
                 # TODO
                 fork_count[abs(3 - wp_len)] += len(X)
                 board_sd = self.__clear_board(board_sd, len(patt), x, y, 1, -1)
 
         return np.any(np.array(fork_count) > 1)
-
-
 
     def __check_prefab_tabu(self, player, cell):
         if self.__step == 0 and cell != (7, 7):
@@ -204,6 +205,10 @@ class BoardManager:
                 if x < 0:
                     y = 14 + x
                     x = Y[0]
+
+                    y -= Y[0]
+                else:
+                    x += Y[0]
 
                 return pl, x, y, 1, -1
 
