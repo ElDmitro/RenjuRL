@@ -13,6 +13,13 @@ WNT_CHIP_IN_ROW = 5
 # Winning chip sequence in a board
 WIN_PL_COMBS ={PLAYERS[0]: np.array([PLAYERS[0]] * WNT_CHIP_IN_ROW),
                PLAYERS[1]: np.array([PLAYERS[1]] * WNT_CHIP_IN_ROW)}
+#
+X_RANGE = range(15, 0, -1)
+X_RANGE = [hex(x)[2:] for x in X_RANGE]
+X_MAPPING = dict(zip(X_RANGE, range(len(X_RANGE))))
+#
+Y_RANGE = list("abcdefghijklmno")
+Y_MAPPING = dict(zip(Y_RANGE, range(len(Y_RANGE))))
 
 
 class BoardManager:
@@ -118,13 +125,21 @@ class BoardManager:
         ----------
         :param player: int (value from PLAYER constant)
                     Represent id of making pass player
-        :return: None
+        :return: None - only one pass in a raw
+                 tuple(0, 0, 0, 0, 0) - current player agree with a draw (second pass)
+
+        :raises ValueError
+                args: (error code, message)
+
+                ERR code 2: Incorrect player id passed
+
+                ERR code 0: Player with passed id cannot making a move this turn
         """
         if player not in PLAYERS:
-            raise Exception(2, "Incorrect players number.\nPlayers list: {}, {}".format(PLAYERS[0], PLAYERS[1]))
+            raise ValueError(2, "Incorrect players number.\nPlayers list: {}, {}".format(PLAYERS[0], PLAYERS[1]))
 
         if self.__next_player != player:
-            raise Exception(0, "It's not {} player turn".format(player))
+            raise ValueError(0, "It's not {} player turn".format(player))
 
         if self.__is_pass:
             return 0, 0, 0, 0, 0
@@ -143,10 +158,11 @@ class BoardManager:
         :param player: int (value from PLAYER constant)
                     Represent number of making move player
 
-        :param cell: tuple(int, int)
-                Board cell coardinates in a format: (vertical, horizontal)
+        :param cell: tuple(str litera, str litera)
+                Board cell coardinates in a format: (horizontal, vertical)
                 Board grows down-right
                 Cell coordinates are limited by rectangle with vertices (0, 0) x B_SHAPE
+                X, Y coordinates range and format specifiend by X/Y_MAPPING constant
 
         :return: None or tuple
                 Game status (nobody win or return winning combination position)
@@ -154,20 +170,46 @@ class BoardManager:
                 tuple  - winning combination description
 
                 tuple has format: (player id, x cell coord, y cell coord, vector from top-left chip to the end)
+
+        :raises ValueError
+                args: (error code, message)
+
+                ERR code 2: Incorrect player id passed
+
+                ERR code 0: Player with passed id cannot making a move this turn
+
+        :raises IndexError
+                args: (error code, message)
+
+                ERR code 1: Attempt to pass a chip out of a board
+
+        :raises AssertionError:
+                args: (error code, message)
+
+                ERR code 3: Attempt to pass a chip on already used cell
         """
         if player not in PLAYERS:
-            raise Exception(2, "Incorrect players number.\nPlayers list: {}, {}".format(PLAYERS[0], PLAYERS[1]))
+            raise ValueError(2, "Incorrect players number.\nPlayers list: {}, {}".format(PLAYERS[0], PLAYERS[1]))
 
         if self.__next_player != player:
-            raise Exception(0, "It's not {} player turn".format(player))
+            raise ValueError(0, "It's not {} player turn".format(player))
+
+        try:
+            cell = list(cell)
+            tmp = X_MAPPING[cell[1]]
+            cell[1] = Y_MAPPING[cell[0]]
+            cell[0] = tmp
+        except:
+            raise IndexError(1, "Incorrect coordinates")
 
         if cell[0] < 0 or cell[0] >= B_SHAPE[0]:
-            raise Exception(1, "Incorrect move")
+            raise IndexError(1, "Incorrect coordinates")
         if cell[1] < 0 or cell[1] >= B_SHAPE[1]:
-            raise Exception(1, "Incorrect move")
+            raise IndexError(1, "Incorrect coordinates")
 
+        cell = tuple(cell)
         if self.__board[cell] != 0:
-            raise Exception(3, "This cell is used")
+            raise AssertionError(3, "This cell is used")
 
         self.__board[cell] = player
 

@@ -17,7 +17,27 @@ class ConsoleInterface:
         if 'win_chip' in kwargs.keys():
             self.__win_chip = kwargs['win_chip']
 
-        pass
+    @staticmethod
+    def show_message(line, end='\n'):
+        print(line, end=end)
+
+    @staticmethod
+    def get_command():
+        ConsoleInterface.show_message("\nYour turn $:", end=' ')
+        return ConsoleInterface.__parse_command(input())
+
+    @staticmethod
+    def __parse_command(line):
+        line = line.split()
+        return {'code': line[0], 'args': line[1:]}
+
+    @staticmethod
+    def close_thm():
+        ConsoleInterface.show_message("Are you sure? [y/n]:", end='')
+        if input() == 'y':
+            return 1
+
+        return 0
 
     def __swap2chr(self, board):
         board = board.copy()
@@ -57,16 +77,5 @@ class ConsoleInterface:
             print(" {}".format(el), end='')
         print()
 
-    def show_message(self, line, end='\n'):
-        print(line, end=end)
 
-    def get_command(self):
-        return self.__parse_command(input())
-
-    def __parse_command(self, line):
-        line = line.split()
-        return {'code': line[0], 'args': line[1:]}
-
-    def close_thm(self):
-        pass
 
