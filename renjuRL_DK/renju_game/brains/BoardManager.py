@@ -77,7 +77,7 @@ class BoardManager:
             if len(X) > 0:
                 if X[0] <= B_SHAPE[1] - 1:
                     x = 0 + Y[0]
-                    y = X[0] + Y[0]
+                    y = B_SHAPE[1] - 1 - X[0] + Y[0]
                 else:
                     X[0] = X[0] - B_SHAPE[1] + 1
 
