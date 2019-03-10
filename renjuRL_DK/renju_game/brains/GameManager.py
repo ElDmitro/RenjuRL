@@ -1,6 +1,5 @@
 from renjuRL_DK.renju_game.brains.BoardManager import BoardManager
-
-from renjuRL_DK.renju_game.brains.BoardManager import B_SHAPE, PLAYERS
+from renjuRL_DK.renju_game.brains.BoardManager import PLAYERS
 
 
 class GameManager:

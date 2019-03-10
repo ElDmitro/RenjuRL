@@ -75,30 +75,29 @@ class BoardManager:
             main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
             X, Y = BoardManager.__get_win_roll_wds(pl, main_diag_mx)
             if len(X) > 0:
-                X = 14 - X[0]
-                Y = Y[0]
+                if X[0] <= B_SHAPE[1] - 1:
+                    x = 0 + Y[0]
+                    y = X[0] + Y[0]
+                else:
+                    X[0] = X[0] - B_SHAPE[1] + 1
 
-                if X < 0:
-                    tmp = -X
-                    X = Y
-                    Y = tmp
+                    x = X[0] + Y[0]
+                    y = 0 + Y[0]
 
-                return pl, X, Y, 1, 1
+                return pl, x, y, 1, 1
 
             main_diag_mx = self.__get_diag_mx(np.fliplr(self.__board))
             main_diag_mx = np.array(self.__extend2nparray(main_diag_mx))
             X, Y = BoardManager.__get_win_roll_wds(pl, main_diag_mx)
             if len(X) > 0:
-                x = 14 - X[0]
-                y = 14 - Y[0]
-
-                if x < 0:
-                    y = 14 + x
-                    x = Y[0]
-
-                    y -= Y[0]
+                if X[0] <= B_SHAPE[0] - 1:
+                    x = B_SHAPE[0] - 1 - X[0] + Y[0]
+                    y = B_SHAPE[1] - 1 - Y[0]
                 else:
-                    x += Y[0]
+                    X[0] = X[0] - B_SHAPE[0] - 1
+
+                    x = 0 + Y[0]
+                    y = B_SHAPE[1] - 1 - X[0] - Y[0]
 
                 return pl, x, y, 1, -1
 
