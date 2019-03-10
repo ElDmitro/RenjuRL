@@ -91,13 +91,13 @@ class BoardManager:
             X, Y = BoardManager.__get_win_roll_wds(pl, main_diag_mx)
             if len(X) > 0:
                 if X[0] <= B_SHAPE[0] - 1:
-                    x = B_SHAPE[0] - 1 - X[0] + Y[0]
-                    y = B_SHAPE[1] - 1 - Y[0]
+                    x = Y[0]
+                    y = X[0] - Y[0]
                 else:
-                    X[0] = X[0] - B_SHAPE[0] - 1
+                    X[0] = X[0] - B_SHAPE[0] + 1
 
-                    x = 0 + Y[0]
-                    y = B_SHAPE[1] - 1 - X[0] - Y[0]
+                    x = X[0] + Y[0]
+                    y = B_SHAPE[1] - 1 - Y[0]
 
                 return pl, x, y, 1, -1
 
