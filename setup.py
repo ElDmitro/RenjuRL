@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='renju_DK',
-    version='1.1.3',
+    version='1.2.2',
     description='Renju RL game with computer oppenent',
     url='https://github.com/eldmitro/renjurl',
     author='Dmitriy Kuznetsov',
@@ -13,7 +13,7 @@ setup(
     ],
     packages=find_packages(exclude=['projection', 'docs']),
     python_requires='>=3.6, <4',
-    install_requires=['numpy'],
+    install_requires=['numpy', 'tensorflow', 'keras'],
     entry_points={  # Optional
         'console_scripts': [
             'renju_DK=renjuRL_DK.renju_game.main:main',
