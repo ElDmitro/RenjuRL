@@ -57,22 +57,22 @@ class ConsoleInterface:
         board = self.__swap2chr(board)
 
         for i in range(x_shape):
-            print("   ", end='')
+            print("    ", end='')
             for j in range(y_shape):
                 print(" |", end='')
             print()
-            print("{:x}: ".format(15 - i), end='')
+            print("{:02d}: ".format(15 - i), end='')
 
             for el in board[i]:
                 print("-{}".format(chr(el)), end='')
             print("-", end='\n')
 
-        print("   ", end='')
+        print("    ", end='')
         for i in range(y_shape):
             print(" |", end='')
         print()
 
-        print("   ", end='')
+        print("    ", end='')
         for el in list("abcdefghijklmno"):
             print(" {}".format(el), end='')
         print()

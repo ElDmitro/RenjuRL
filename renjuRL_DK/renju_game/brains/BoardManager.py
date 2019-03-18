@@ -15,7 +15,7 @@ WIN_PL_COMBS ={PLAYERS[0]: np.array([PLAYERS[0]] * WNT_CHIP_IN_ROW),
                PLAYERS[1]: np.array([PLAYERS[1]] * WNT_CHIP_IN_ROW)}
 #
 X_RANGE = range(15, 0, -1)
-X_RANGE = [hex(x)[2:] for x in X_RANGE]
+X_RANGE = [str(x) for x in X_RANGE]
 X_MAPPING = dict(zip(X_RANGE, range(len(X_RANGE))))
 #
 Y_RANGE = list("abcdefghijklmno")
@@ -29,6 +29,16 @@ class BoardManager:
         self.__board = np.zeros(B_SHAPE, dtype=np.int8)
         self.__step = 0
         self.__is_pass = 0
+
+    @staticmethod
+    def __get_next_player(x):
+        if x == PLAYERS[0]:
+            return PLAYERS[1]
+
+        return PLAYERS[0]
+
+    def who_is_next(self):
+        return self.__next_player
 
     @staticmethod
     def __get_diag_mx(a):
@@ -101,11 +111,7 @@ class BoardManager:
 
                 return pl, x, y, 1, -1
 
-            return None
-
-    # TODO: after debug need correction
-    def __get_next_player(self, x):
-        return x
+        return None
 
     def get_board_status(self):
         """
