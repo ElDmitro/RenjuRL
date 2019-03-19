@@ -30,7 +30,7 @@ class PinkyBrains:
     def __is_used_cell(step, board):
         x, y = step
 
-        if (x == 15) or (not board[x, y]):
+        if (x != 15) and (not board[x, y]):
             return 0
 
         return 1
