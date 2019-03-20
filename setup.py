@@ -12,7 +12,7 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     packages=find_packages(exclude=['projection', 'docs']),
-    python_requires='>=3.6, <4',
+    python_requires='>=3.5, <4',
     install_requires=['numpy', 'tensorflow', 'keras'],
     entry_points={  # Optional
         'console_scripts': [

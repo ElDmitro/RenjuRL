@@ -1,6 +1,12 @@
+import logging
+import os
+import sys
+
 import numpy as np
 import keras
+import warnings
 
+warnings.simplefilter("ignore")
 X_RANGE = range(15, 0, -1)
 X_RANGE = [str(x) for x in X_RANGE]
 X_MAPPING = dict(zip(X_RANGE, range(len(X_RANGE))))
@@ -104,28 +110,71 @@ def move2cord(move):
     return x, y
 
 
-my_uid = 0
-opponent_uid = 0
-game_board = np.zeros((15, 15))
-model = None
-while True:
-    board_list = input().split()
+def set_move(move):
+    if sys.stdout.closed:
+        return False
 
-    if not my_uid:
-        my_uid = -1
-        opponent_uid = 1
-        if board_list == []:
-            my_uid = 1
-            opponent_uid = -1
+    sys.stdout.write(move + '\n')
+    sys.stdout.flush()
 
-        model = PinkyBrains(my_uid)
+    return True
 
-    if board_list != []:
-        x, y = move2cord(board_list[-1])
-        game_board[x, y] = opponent_uid
 
-    my_move = model.put2any(game_board)['args']
-    my_move = my_move[0] + my_move[1]
-    x, y = move2cord(my_move)
-    game_board[x, y] = my_uid
-    print(my_move, end='\n')
+def main():
+    pid = os.getpid()
+    LOG_FORMAT = f'{pid}:%(levelname)s:%(asctime)s: %(message)s'
+
+    logging.basicConfig(format=LOG_FORMAT, level=logging.DEBUG)
+    logging.debug("Start dummy backend...")
+
+    try:
+        my_uid = 0
+        opponent_uid = 0
+        game_board = np.zeros((15, 15))
+        model = None
+        while True:
+            if not sys.stdin.closed:
+                board_list_str = sys.stdin.readline()
+
+                if board_list_str:
+                    board_list = board_list_str.split()
+                else:
+                    board_list = None
+            else:
+                board_list = None
+
+            if not board_list_str:
+                logging.debug("Game is over!")
+                return
+
+            if not my_uid:
+                my_uid = -1
+                opponent_uid = 1
+                if board_list == []:
+                    my_uid = 1
+                    opponent_uid = -1
+
+                model = PinkyBrains(my_uid)
+
+            if board_list != []:
+                x, y = move2cord(board_list[-1])
+                game_board[x, y] = opponent_uid
+
+            logging.debug('Game: [%s]', board_list_str)
+            my_move = model.put2any(game_board)['args']
+            my_move = my_move[0] + my_move[1]
+            x, y = move2cord(my_move)
+            game_board[x, y] = my_uid
+
+            if not set_move(my_move):
+                logging.error("Impossible set move!")
+                return
+
+            logging.debug('Random move: %s', my_move)
+
+    except:
+        logging.error('Error!', exc_info=True, stack_info=True)
+
+
+if __name__ == "__main__":
+    main()
