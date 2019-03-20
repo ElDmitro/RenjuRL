@@ -4,7 +4,7 @@ import keras
 
 from renjuRL_DK.renju_game.brains.BoardManager import PLAYERS
 
-CHECKPOINT_PATH = '/home/eldmitro/Notebook/RenjuRL/renjuRL_DK/AI/model_checkpoint/v1'
+CHECKPOINT_PATH = '/home/eldmitro/Notebook/RenjuRL/renjuRL_DK/AI/v1'
 
 
 class PolicyNN:

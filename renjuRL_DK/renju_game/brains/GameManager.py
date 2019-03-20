@@ -32,6 +32,7 @@ class GameManager:
                     user_id: lambda x: self.__interface.get_command()}
 
         while True:
+            self.__interface.update_board(self.__current_bm.get_board_status())
             player = self.__current_bm.who_is_next()
             exit_c = self.__make_turn(player, environs[player])
 
