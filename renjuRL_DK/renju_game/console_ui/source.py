@@ -73,7 +73,7 @@ class ConsoleInterface:
         print()
 
         print("    ", end='')
-        for el in list("abcdefghijklmno"):
+        for el in list("abcdefghjklmnop"):
             print(" {}".format(el), end='')
         print()
 

@@ -11,7 +11,7 @@ X_RANGE = range(15, 0, -1)
 X_RANGE = [str(x) for x in X_RANGE]
 X_MAPPING = dict(zip(X_RANGE, range(len(X_RANGE))))
 #
-Y_RANGE = list("abcdefghijklmno")
+Y_RANGE = list("abcdefghjklmnop")
 Y_MAPPING = dict(zip(Y_RANGE, range(len(Y_RANGE))))
 
 PLAYERS = [1, -1]
