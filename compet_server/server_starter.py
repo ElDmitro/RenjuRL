@@ -59,10 +59,8 @@ class PolicyNN:
 
 
 class PinkyBrains:
-    def __init__(self, uid):
-        assert uid in PLAYERS, "AI Brain: User Id is not from list"
+    def __init__(self):
         self.__elder_brother = PolicyNN()
-        self.__my_uid = uid
 
     @staticmethod
     def __encode_movement(coord):
@@ -86,8 +84,8 @@ class PinkyBrains:
 
         return 1
 
-    def put2any(self, board):
-        prediction_x, prediction_y = self.__elder_brother.predict(self.__my_uid, board)
+    def put2any(self, board, uid):
+        prediction_x, prediction_y = self.__elder_brother.predict(uid, board)
 
         i = 0
         while (i < len(prediction_x[0])) and PinkyBrains.__is_used_cell((prediction_x[0][i], prediction_y[0][i]), board):
@@ -131,7 +129,8 @@ def main():
         my_uid = 0
         opponent_uid = 0
         game_board = np.zeros((15, 15))
-        model = None
+        model = PinkyBrains()
+        logging.debug("Model loaded!!!")
         while True:
             if not sys.stdin.closed:
                 board_list_str = sys.stdin.readline()
@@ -154,14 +153,12 @@ def main():
                     my_uid = 1
                     opponent_uid = -1
 
-                model = PinkyBrains(my_uid)
-
             if board_list != []:
                 x, y = move2cord(board_list[-1])
                 game_board[x, y] = opponent_uid
 
             logging.debug('Game: [%s]', board_list_str)
-            my_move = model.put2any(game_board)
+            my_move = model.put2any(game_board, my_uid)
             my_move = my_move['args']
 
             my_move = my_move[0] + my_move[1]
