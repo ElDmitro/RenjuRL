@@ -93,7 +93,7 @@ class PinkyBrains:
         while (i < len(prediction_x[0])) and PinkyBrains.__is_used_cell((prediction_x[0][i], prediction_y[0][i]), board):
             i += 1
 
-        if i == len(prediction_x):
+        if i == len(prediction_x[0]):
             return PinkyBrains.__encode_movement((15, 1))
 
         return PinkyBrains.__encode_movement((prediction_x[0][i], prediction_y[0][i]))
@@ -161,7 +161,9 @@ def main():
                 game_board[x, y] = opponent_uid
 
             logging.debug('Game: [%s]', board_list_str)
-            my_move = model.put2any(game_board)['args']
+            my_move = model.put2any(game_board)
+            my_move = my_move['args']
+
             my_move = my_move[0] + my_move[1]
             x, y = move2cord(my_move)
             game_board[x, y] = my_uid

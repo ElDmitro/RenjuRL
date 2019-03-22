@@ -42,7 +42,7 @@ class PinkyBrains:
         while (i < len(prediction_x[0])) and PinkyBrains.__is_used_cell((prediction_x[0][i], prediction_y[0][i]), board):
             i += 1
 
-        if i == len(prediction_x):
+        if i == len(prediction_x[0]):
             return PinkyBrains.__encode_movement((15, 1))
 
         return PinkyBrains.__encode_movement((prediction_x[0][i], prediction_y[0][i]))
