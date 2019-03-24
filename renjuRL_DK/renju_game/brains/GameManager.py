@@ -30,9 +30,9 @@ class GameManager:
         self.__bot_player = PinkyBrains(opponent_id)
         environs = {opponent_id: lambda x: self.__bot_player.put2any(x.get_board_status()),
                     user_id: lambda x: self.__interface.get_command()}
+        self.__interface.update_board(self.__current_bm.get_board_status())
 
         while True:
-            self.__interface.update_board(self.__current_bm.get_board_status())
             player = self.__current_bm.who_is_next()
             exit_c = self.__make_turn(player, environs[player])
 
