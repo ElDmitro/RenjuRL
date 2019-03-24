@@ -1,10 +1,12 @@
 import numpy as np
 
 import keras
+import tensorflow as tf
 
 from renjuRL_DK.renju_game.brains.BoardManager import PLAYERS
 
 CHECKPOINT_PATH = '/home/eldmitro/Notebook/RenjuRL/renjuRL_DK/AI/v1'
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 
 class PolicyNN:
