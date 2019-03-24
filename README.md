@@ -4,7 +4,7 @@
 This project is an aggregate of Renju game engine and neural network, which knows how to play professionally. You can enjoy playing renju game via console interface and practice your skills.
 
 ### How to start
-First of all, you **should install this module**. For example, use pip for this process.
+First of all, you **should install this module**. For example, use pip for this process. <br/>
 After that you should **run sh-script renjuRL.sh**, which is located in the root directory (renjuRL_DK). Before running script check this script file has launch access rights.
 
 After you are complete with launch, programm will run console interface environment and ask you to choose chip color.
