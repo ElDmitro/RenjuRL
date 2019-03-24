@@ -29,6 +29,9 @@ class ConsoleInterface:
     @staticmethod
     def __parse_command(line):
         line = line.split()
+        if len(line) < 2:
+            return {'code': 'wrong', 'args': []}
+        
         return {'code': line[0], 'args': line[1:]}
 
     @staticmethod
